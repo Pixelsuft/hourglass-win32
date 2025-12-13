@@ -7880,6 +7880,8 @@ static DWORD WINAPI DebuggerThreadFunc(LPVOID lpParam)
 			// actually something a normal debugger might do:
 			case LOAD_DLL_DEBUG_EVENT:
 				{
+					if(de.dwProcessId != processInfo.dwProcessId)
+						break;
 #pragma region LOAD_DLL_DEBUG_EVENT
 //					bool neverLoaded = dllBaseToHandle.find(de.u.LoadDll.lpBaseOfDll) == dllBaseToHandle.end();
 					//bool neverLoaded = dllBaseToFilename.find(de.u.LoadDll.lpBaseOfDll) == dllBaseToFilename.end();
@@ -7923,6 +7925,8 @@ static DWORD WINAPI DebuggerThreadFunc(LPVOID lpParam)
 				break;
 			case UNLOAD_DLL_DEBUG_EVENT:
 				{
+					if(de.dwProcessId != processInfo.dwProcessId)
+						break;
 #pragma region UNLOAD_DLL_DEBUG_EVENT
 					//char filename [MAX_PATH+1];
 					//HANDLE hFile = dllBaseToHandle[de.u.UnloadDll.lpBaseOfDll];
@@ -7945,6 +7949,8 @@ static DWORD WINAPI DebuggerThreadFunc(LPVOID lpParam)
 			// when it comes time to save or load them
 			case CREATE_THREAD_DEBUG_EVENT:
 				{
+					if(de.dwProcessId != processInfo.dwProcessId)
+						break;
 #pragma region CREATE_THREAD_DEBUG_EVENT
 					debugprintf("STARTED THREAD: id=0x%X, handle=0x%X\n", de.dwThreadId, de.u.CreateThread.hThread);
 
@@ -7988,6 +7994,8 @@ static DWORD WINAPI DebuggerThreadFunc(LPVOID lpParam)
 				break;
 			case EXIT_THREAD_DEBUG_EVENT:
 				{
+					if(de.dwProcessId != processInfo.dwProcessId)
+						break;
 #pragma region EXIT_THREAD_DEBUG_EVENT
 					HandleThreadExitEvent(de, processInfo);
 #pragma endregion
@@ -7996,6 +8004,8 @@ static DWORD WINAPI DebuggerThreadFunc(LPVOID lpParam)
 
 			case CREATE_PROCESS_DEBUG_EVENT:
 				{
+					if(de.dwProcessId != processInfo.dwProcessId)
+						break;
 #pragma region CREATE_PROCESS_DEBUG_EVENT
 					char filename [MAX_PATH+1];
 
@@ -8039,7 +8049,7 @@ static DWORD WINAPI DebuggerThreadFunc(LPVOID lpParam)
 						LOADSYMBOLS2(hGameProcess, filename, de.u.CreateProcessInfo.hFile, de.u.CreateProcessInfo.lpBaseOfImage);
 						//CloseHandle(de.u.CreateProcessInfo.hProcess);
 					}
-					else
+					else if (0)
 					{
 						// TODO:
 						//// hook the game process' child process too
@@ -8077,6 +8087,8 @@ static DWORD WINAPI DebuggerThreadFunc(LPVOID lpParam)
 			case EXIT_PROCESS_DEBUG_EVENT:
 				//debugprintf("got EXIT_PROCESS_DEBUG_EVENT \n");
 				{
+					if(de.dwProcessId != processInfo.dwProcessId)
+						break;
 #pragma region EXIT_PROCESS_DEBUG_EVENT
 					// TODO: handle closing child processes without closing the main one
 					// for now we assume we're all done whenever any process or subprocess exits.
@@ -8107,6 +8119,8 @@ static DWORD WINAPI DebuggerThreadFunc(LPVOID lpParam)
 				}
 				break;
 			case RIP_EVENT: // I've never encountered a rip event, but I might as well log it in case it happens.
+					if(de.dwProcessId != processInfo.dwProcessId)
+						break;
 				debugprintf("RIP: err=0x%X, type=0x%X\n", de.u.RipInfo.dwError, de.u.RipInfo.dwType);
 				break;
 			}
