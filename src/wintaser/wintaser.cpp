@@ -4617,7 +4617,7 @@ void DoPow2Logic(int frameCount)
 						char str [256];
 						sprintf(str, "DESYNC DETECTED: on frame %d, your timer = %d but movie's timer = %d.\nThat means this playback of the movie desynced somewhere between frames %d and %d.", frameCount, localGeneralInfoFromDll.ticks, movieTime, frameCount, frameCount>>1);
 						debugprintf("%s\n", str);
-						CustomMessageBox(str, "Desync Warning", MB_OK | MB_ICONWARNING);
+						// CustomMessageBox(str, "Desync Warning", MB_OK | MB_ICONWARNING);
 					}
 					movie.desyncDetectionTimerValues[which] = localGeneralInfoFromDll.ticks;
 				}
